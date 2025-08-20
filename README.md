@@ -69,59 +69,65 @@ avoidance, or feints. After each engagement, the AI updates its memory, personal
 
 #### Conceptual Diagram: Program Structure and Enemy AI Flow
  
-+---------------------+        +----------------------------+
-|    CampaignState    |        |    EnhancedEnemyAI         |
-+---------------------+        +----------------------------+
-| - units             |<>------| - personality              |
-| - enemy_units       |        | - memory (last 5 battles)  |
-| - resources         |        | - last_player_distribution |
-| - morale / fatigue  |        |                            |
-| - terrain / weather |        +----------------------------+
-| - enemy_ai -------->|   decide_personality()
-+---------------------+   observe_outcome()
-                         suggest_enemy_recruit()
-                         adjust_behavior()
++---------------------+ +----------------------------+
+| CampaignState | | EnhancedEnemyAI |
++---------------------+ +----------------------------+
+| - units |<>------| - personality |
+| - enemy_units | | - memory (last 5 battles) |
+| - resources | | - last_player_distribution |
+| - morale / fatigue | | |
+| - terrain / weather | +----------------------------+
+| - enemy_ai -------->| decide_personality()
++---------------------+ observe_outcome()
+suggest_enemy_recruit()
+adjust_behavior()
 
 +------------------------+
-| CampaignSimulatorGUI    |
+| CampaignSimulatorGUI |
 +------------------------+
-| - run_simulation()      |-----> Controls battle turns and actions
-| - log()                |       Calls AI decisions and battle resolution
+| - run_simulation() |-----> Controls battle turns and actions
+| - log() | Calls AI decisions and battle resolution
 | - resource_management() |
-| - update_graph()        |
+| - update_graph() |
 +------------------------+
 
 #### Enemy AI Decision Flow
 
 [Start of Turn]
-      │
-      ▼
+│
+▼
 Analyze last 5 battle outcomes from memory
-      │
-      ▼
+│
+▼
 Calculate player's win rate
-      │
-      ├───────────────┬────────────────┬───────────────┐
-      │ Win rate > 70%│ Win rate < 30% │ Else          │
-      │ Aggressive AI │ Defensive AI   │ Deceptive AI  │
-      └───────────────┴────────────────┴───────────────┘
-      │
-      ▼
+│
+├───────────────┬────────────────┬───────────────┐
+│ Win rate > 70%│ Win rate < 30% │ Else │
+│ Aggressive AI │ Defensive AI │ Deceptive AI │
+└───────────────┴────────────────┴───────────────┘
+│
+▼
 Observe player troop distribution
-      │
-      ▼
+│
+▼
 Decide recruitment to counter main player forces
-      │
-      ▼
+│
+▼
 During battle:
- - If Aggressive → frontal attacks
- - If Defensive → avoid combat
- - If Deceptive → feints and ambushes
-      │
-      ▼
-Update memory with outcome of the battle
-      │
-      ▼
-[End of Turn → Next turn]
+
+    If Aggressive → frontal attacks
+
+    If Defensive → avoid combat
+
+    If Deceptive → feints and ambushes
+    │
+    ▼
+    Update memory with outcome of the battle
+    │
+    ▼
+    [End of Turn → Next turn]
+
+
+
 
 
