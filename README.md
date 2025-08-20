@@ -56,5 +56,72 @@ This AI is designed to simulate an intelligent and evolving opponent rather than
 - **Tactical Behavior**: In combat, the AI adjusts its tactics based on its current personality, choosing to be firm, cautious, or deceptive, with actions such as evasion, feinting, or confident attacks.
 
 
+### MCS_003.py
  
+The simulator features diverse unit types with unique attributes, an enemy AI that dynamically adapts by learning from recent battles, and considers environmental factors like terrain and weather.
+It uses a battle engine inspired by Sun Tzu’s tactics for realistic combat outcomes. The user interface provides detailed logs, dynamic visualizations of key metrics, 
+and controls for game settings and data management.
+
+The enemy AI, implemented as EnhancedEnemyAI, operates with three possible personalities—aggressive, defensive, and deceptive—based on its recent battle performance against the player. 
+It remembers the last five battles to adjust its strategy: becoming aggressive if frequently losing, defensive if under heavy pressure, or deceptive otherwise.
+The AI also counters the player's troop composition by recruiting units strategically. During battles, it chooses tactics aligned with its personality, such as direct attacks, 
+avoidance, or feints. After each engagement, the AI updates its memory, personality, and recruitment strategy, enabling continuous learning and adaptation.
+
+#### Conceptual Diagram: Program Structure and Enemy AI Flow
  
++---------------------+        +----------------------------+
+|    CampaignState    |        |    EnhancedEnemyAI         |
++---------------------+        +----------------------------+
+| - units             |<>------| - personality              |
+| - enemy_units       |        | - memory (last 5 battles)  |
+| - resources         |        | - last_player_distribution |
+| - morale / fatigue  |        |                            |
+| - terrain / weather |        +----------------------------+
+| - enemy_ai -------->|   decide_personality()
++---------------------+   observe_outcome()
+                         suggest_enemy_recruit()
+                         adjust_behavior()
+
++------------------------+
+| CampaignSimulatorGUI    |
++------------------------+
+| - run_simulation()      |-----> Controls battle turns and actions
+| - log()                |       Calls AI decisions and battle resolution
+| - resource_management() |
+| - update_graph()        |
++------------------------+
+
+#### Enemy AI Decision Flow
+
+[Start of Turn]
+      │
+      ▼
+Analyze last 5 battle outcomes from memory
+      │
+      ▼
+Calculate player's win rate
+      │
+      ├───────────────┬────────────────┬───────────────┐
+      │ Win rate > 70%│ Win rate < 30% │ Else          │
+      │ Aggressive AI │ Defensive AI   │ Deceptive AI  │
+      └───────────────┴────────────────┴───────────────┘
+      │
+      ▼
+Observe player troop distribution
+      │
+      ▼
+Decide recruitment to counter main player forces
+      │
+      ▼
+During battle:
+ - If Aggressive → frontal attacks
+ - If Defensive → avoid combat
+ - If Deceptive → feints and ambushes
+      │
+      ▼
+Update memory with outcome of the battle
+      │
+      ▼
+[End of Turn → Next turn]
+
+
