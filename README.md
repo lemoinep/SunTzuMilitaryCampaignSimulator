@@ -258,5 +258,8 @@ It provides rich, evolving advice and responsive enemy tactics that deepen gamep
 This approach reflects modern trends where AI-driven strategic planning aligns timeless wisdom with algorithmic rigor to deliver sophisticated decision-support systems.
 
 
+### MCS_005.py
+
+Todo list: The next program is under construction to add additional artificial intelligence. I invite you to follow my progress.
 
 
