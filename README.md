@@ -213,23 +213,23 @@ The AI integrates two classic strategic frameworks:
                          suggest_enemy_recruit()
                          adjust_behavior()
 
-+------------------------+
++-------------------------+
 |    ChessSunTzuAI        |
-+------------------------+
++-------------------------+
 | - chess_principles      |
 | - recommend()           |--- Generates strategic recommendations based on:
 |                         |    forces, morale, terrain, weather, time, history
-+------------------------+
++-------------------------+
 
-+------------------------+
++-------------------------+
 | CampaignSimulatorGUI    |
-+------------------------+
++-------------------------+
 | - run_simulation()      |-----> Controls battle turns and simulation loop
 | - log()                 |       Invokes AI recommendations and battle resolution
 | - resource_management() |       Updates state based on actions, events
 | - update_graph()        |       Displays forces, morale, AI evolution trends
 | - display_chess_suntzu_recommendations()
-+------------------------+
++-------------------------+
 
 ```
 
@@ -242,7 +242,7 @@ The AI integrates two classic strategic frameworks:
 | EnhancedEnemyAI            |
 +----------------------------+
 | 1) observe_outcome()       |
-| 2) decide_personality()     |--- Personality: {aggressive, defensive, deceptive}
+| 2) decide_personality()    |--- Personality: {aggressive, defensive, deceptive}
 | 3) suggest_enemy_recruit() |    |                        
 | 4) adjust_behavior() ------+----+-----> Behavior decisions:
 +----------------------------+         - aggressive: confident attack
