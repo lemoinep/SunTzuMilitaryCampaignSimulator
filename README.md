@@ -200,34 +200,34 @@ The AI integrates two classic strategic frameworks:
 #### Conceptual Diagram: Program Structure and Enemy AI Flow
 
 ```
-+---------------------+ +----------------------------+
-| CampaignState | | EnhancedEnemyAI |
-+---------------------+ +----------------------------+
-| - units |<>------| - personality |
-| - enemy_units | | - memory (last 5 battles) |
-| - resources | | - last_player_distribution |
-| - morale / fatigue | | |
-| - terrain / weather | +----------------------------+
-| - enemy_ai -------->| decide_personality()
-+---------------------+ observe_outcome()
-suggest_enemy_recruit()
-adjust_behavior()
++---------------------+        +----------------------------+
+|    CampaignState    |        |    EnhancedEnemyAI         |
++---------------------+        +----------------------------+
+| - units             |<>------| - personality              |
+| - enemy_units       |        | - memory (last 5 battles)  |
+| - resources         |        | - last_player_distribution |
+| - morale / fatigue  |        |                            |
+| - terrain / weather |        +----------------------------+
+| - enemy_ai -------->|   decide_personality()
++---------------------+   observe_outcome()
+                         suggest_enemy_recruit()
+                         adjust_behavior()
 
 +------------------------+
-| ChessSunTzuAI |
+|    ChessSunTzuAI        |
 +------------------------+
-| - chess_principles |
-| - recommend() |--- Generates strategic recommendations based on:
-| | forces, morale, terrain, weather, time, history
+| - chess_principles      |
+| - recommend()           |--- Generates strategic recommendations based on:
+|                         |    forces, morale, terrain, weather, time, history
 +------------------------+
 
 +------------------------+
-| CampaignSimulatorGUI |
+| CampaignSimulatorGUI    |
 +------------------------+
-| - run_simulation() |-----> Controls battle turns and simulation loop
-| - log() | Invokes AI recommendations and battle resolution
-| - resource_management() | Updates state based on actions, events
-| - update_graph() | Displays forces, morale, AI evolution trends
+| - run_simulation()      |-----> Controls battle turns and simulation loop
+| - log()                 |       Invokes AI recommendations and battle resolution
+| - resource_management() |       Updates state based on actions, events
+| - update_graph()        |       Displays forces, morale, AI evolution trends
 | - display_chess_suntzu_recommendations()
 +------------------------+
 
@@ -239,18 +239,18 @@ adjust_behavior()
 
 ```
 +----------------------------+
-| EnhancedEnemyAI |
+| EnhancedEnemyAI            |
 +----------------------------+
-| 1) observe_outcome() |
-| 2) decide_personality() |--- Personality: {aggressive, defensive, deceptive}
-| 3) suggest_enemy_recruit() | |
+| 1) observe_outcome()       |
+| 2) decide_personality()     |--- Personality: {aggressive, defensive, deceptive}
+| 3) suggest_enemy_recruit() |    |                        
 | 4) adjust_behavior() ------+----+-----> Behavior decisions:
-+----------------------------+ - aggressive: confident attack
-- defensive: avoid/direct engagement
-- deceptive: feints, misdirection
++----------------------------+         - aggressive: confident attack
+                                      - defensive: avoid/direct engagement
+                                      - deceptive: feints, misdirection
 
 ```
-```
+
 
 #### Conclusion
 This fusion of classical military wisdom and chess strategy into an AI module models complex, human-like strategic behavior for campaign simulation. 
