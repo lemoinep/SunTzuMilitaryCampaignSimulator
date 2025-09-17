@@ -82,14 +82,14 @@ After each engagement, the AI updates its memory, personality, and recruitment s
 | - terrain / weather |        +----------------------------+
 | - enemy_ai -------->|   decide_personality()
 +---------------------+   observe_outcome()
-                         suggest_enemy_recruit()
-                         adjust_behavior()
+                          suggest_enemy_recruit()
+                          adjust_behavior()
 
 +------------------------+
 | CampaignSimulatorGUI    |
 +------------------------+
 | - run_simulation()      |-----> Controls battle turns and actions
-| - log()                |       Calls AI decisions and battle resolution
+| - log()                 |       Calls AI decisions and battle resolution
 | - resource_management() |
 | - update_graph()        |
 +------------------------+
@@ -250,7 +250,7 @@ adjust_behavior()
 - deceptive: feints, misdirection
 
 ```
-
+```
 
 #### Conclusion
 This fusion of classical military wisdom and chess strategy into an AI module models complex, human-like strategic behavior for campaign simulation. 
