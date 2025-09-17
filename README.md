@@ -221,15 +221,15 @@ The AI integrates two classic strategic frameworks:
 |                         |    forces, morale, terrain, weather, time, history
 +-------------------------+
 
-+-------------------------+
-| CampaignSimulatorGUI    |
-+-------------------------+
-| - run_simulation()      |-----> Controls battle turns and simulation loop
-| - log()                 |       Invokes AI recommendations and battle resolution
-| - resource_management() |       Updates state based on actions, events
-| - update_graph()        |       Displays forces, morale, AI evolution trends
-| - display_chess_suntzu_recommendations()
-+-------------------------+
++------------------------------------------+
+| CampaignSimulatorGUI                     |
++------------------------------------------+
+| - run_simulation()                       |-----> Controls battle turns and simulation loop
+| - log()                                  |       Invokes AI recommendations and battle resolution
+| - resource_management()                  |       Updates state based on actions, events
+| - update_graph()                         |       Displays forces, morale, AI evolution trends
+| - display_chess_suntzu_recommendations() |
++------------------------------------------+
 
 ```
 
