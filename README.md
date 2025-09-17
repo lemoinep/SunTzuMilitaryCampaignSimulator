@@ -85,14 +85,14 @@ After each engagement, the AI updates its memory, personality, and recruitment s
                           suggest_enemy_recruit()
                           adjust_behavior()
 
-+------------------------+
++-------------------------+
 | CampaignSimulatorGUI    |
-+------------------------+
++-------------------------+
 | - run_simulation()      |-----> Controls battle turns and actions
 | - log()                 |       Calls AI decisions and battle resolution
 | - resource_management() |
 | - update_graph()        |
-+------------------------+
++-------------------------+
 ```
 
 ---
@@ -131,7 +131,7 @@ Update memory with outcome of the battle
       ▼
 [End of Turn → Next turn]
 ```
-```
+
 
 
 ### MCS_004.py
