@@ -55,7 +55,10 @@ This AI is designed to simulate an intelligent and evolving opponent rather than
 - **Recruitment Counter-Strategy**: The AI observes the player's unit composition (for example, if they recruit a lot of infantry) and adapts its own composition to counter this tendency, for example, by strengthening their archers against heavy infantry.
 - **Tactical Behavior**: In combat, the AI adjusts its tactics based on its current personality, choosing to be firm, cautious, or deceptive, with actions such as evasion, feinting, or confident attacks.
 
-### MCS_003.py
+
+### MCS_003.py : **Enhanced Memory with AI**
+
+Enhanced Memory: The AI's memory is expanded to retain the last five battles, enabling it to calculate win rates and adopt a more "historized" and less predictable strategy.
 
 The simulator features diverse unit types with unique attributes, an enemy AI that dynamically adapts by learning from recent battles, and considers environmental factors like terrain and weather.  
 It uses a battle engine inspired by Sun Tzu’s tactics for realistic combat outcomes.  
@@ -133,10 +136,9 @@ Update memory with outcome of the battle
 ```
 
 
+### MCS_004.py : **Sun Tzu campaign simulator with Chess rules strategic AI**
 
-### MCS_004.py
-
-The Sun Tzu campaign simulator with Chess rules strategic AI combines timeless ancient military strategy principles with well-established strategic concepts from chess to create 
+The **Sun Tzu campaign simulator with Chess rules strategic AI** combines timeless ancient military strategy principles with well-established strategic concepts from chess to create 
 a powerful AI decision-making framework for military campaign simulations. Here is a detailed description of how these strategic implementations work:
 
 #### Core Idea
@@ -258,8 +260,91 @@ It provides rich, evolving advice and responsive enemy tactics that deepen gamep
 This approach reflects modern trends where AI-driven strategic planning aligns timeless wisdom with algorithmic rigor to deliver sophisticated decision-support systems.
 
 
-### MCS_005.py
 
-Todo list: The next program is under construction to add additional artificial intelligence. I invite you to follow my progress.
+### MCS_005.py : **Sun Tzu Campaign Simulator with Chess & Go Strategic AI**
+
+The **Sun Tzu Campaign Simulator with Chess & Go Strategic AI** integrates classical and modern strategic principles to simulate military campaigns with advanced artificial intelligence decision-making.
+
+#### Core Strategic Influences
+
+- **Sun Tzu Principles:** Drawing inspiration from *The Art of War*, the simulation emphasizes indirect strategy, deception, terrain advantage, and morale management. Tactics such as feints, ambushes, targeting supply lines, and adaptation to changing conditions are central to the AI’s decisions.
+
+- **Chess Strategy:** The AI incorporates classic chess heuristics such as control of the center, mobility of forces, protection of key units, coordinated attacks, anticipation of opponent responses, and tactical sacrifices. These rules encourage the AI to execute precise, calculated maneuvers for battlefield dominance.
+
+- **Go Game Principles:** The AI also integrates Go-inspired strategies emphasizing territorial control, flexible adaptation, and encirclement. Rather than focusing solely on direct confrontation, the AI prioritizes cutting off enemy supply and communication lines, connecting friendly groups, and exploiting weak points through infiltration or raids. The concept of "aji" (latent threat) influences the maintenance of mobile reserves to force enemy overreaction.
+
+#### AI Integration Highlights
+
+- The **Enhanced Enemy AI** observes player outcomes and unit distributions, dynamically adjusting personality types (aggressive, defensive, deceptive) to evolve its strategic approach.
+
+- **Combined Chess and Go AI modules** provide recommendations each turn, blending immediate tactical chess maneuvers with longer-term Go-driven spatial and strategic considerations.
+
+- Environmental factors such as **terrain, weather, and time of day** are factored in, affecting unit effectiveness and prompting adaptive changes in strategy.
+
+- The simulation models fatigue, supply lines, morale, and espionage activities, all of which influence combat power and decision-making, reflecting the complex reality of protracted campaigns.
+
+
+---
+
+#### Conceptual Diagram: Program Structure and Enemy AI Flow
+
+```
++---------------------+        +----------------------------+
+|    CampaignState    |        |    EnhancedEnemyAI         |
++---------------------+        +----------------------------+
+| - units             |<>------| - personality              |
+| - enemy_units       |        | - memory (last 5 battles)  |
+| - resources         |        | - last_player_distribution |
+| - morale / fatigue  |        |                            |
+| - terrain / weather |        +----------------------------+
+| - enemy_ai -------->|   decide_personality()
++---------------------+   observe_outcome()
+                          suggest_enemy_recruit()
+                          adjust_behavior()
++-------------------------+          +----------------------------+
+|    ChessSunTzuAI        |          |    GoSunTzuAI              |
++-------------------------+          +----------------------------+
+| - chess_principles      |          | - go_strategies            |
+| - recommend()           |---+      | - recommend()              |--- Provides strategic recommendations based on:
+|                         |   |      |                            |    spatial control, encirclement,
++-------------------------+   |      +----------------------------+    territory, adaptation, and indirect pressure
+                              |
++------------------------------------------+
+| CampaignSimulatorGUI                     |
++------------------------------------------+
+| - run_simulation()                       |-----> Controls battle turns and simulation loop
+| - log()                                  |       Invokes AI recommendations and battle resolution
+| - resource_management()                  |       Updates state based on actions, events
+| - update_graph()                         |       Displays forces, morale, AI evolution trends
+| - display_chess_suntzu_recommendations() |
++------------------------------------------+
+
+```
+
+---
+
+#### Enemy AI Decision Flow
+
+```
+
++----------------------------+         +----------------------------+
+|     EnhancedEnemyAI        |         |        GoSunTzuAI          |
++----------------------------+         +----------------------------+
+| 1) observe_outcome()       |         | 1) observe_board_state()   |
+| 2) decide_personality()    |---+     | 2) decide_strategy()       |--- Strategy: {expansion, encirclement, deception}
+| 3) suggest_enemy_recruit() |   |     | 3) suggest_resource_move() |    |                        
+| 4) adjust_behavior() ------+---+---->| 4) adjust_behavior() -------+-----> Behavior decisions:
++----------------------------+         +----------------------------+          - expansion: control more territory
+                                                                               - encirclement: isolate enemy groups
+                                                                               - deception: feints, indirect pressure
+
+```
+
+
+### MCS_006.py
+
+The next program is under construction to add additional artificial intelligence.
+Future Development: A planned integration of advanced AI techniques (machine learning, neural networks) and expanded socio-economic models (alliances, logistics, population support).
+I invite you to follow my progress.
 
 

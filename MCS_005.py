@@ -1,5 +1,5 @@
-# Author(s): Dr. Patrick Lemoine
-# Sun Tzu campaign simulator with Chess rules strategic AI
+# Author(s): Dr. Patrick Lemoine AI/Go/Chess integration: 
+# Sun Tzu Campaign Simulator - Chess & Go Strategic AI
 
 import random
 import tkinter as tk
@@ -23,19 +23,20 @@ class UnitType:
 
 class EnhancedEnemyAI:
     def __init__(self, personality, memory_len=5):
-        self.personality = personality    # 'aggressive', 'defensive', 'deceptive'
+        self.personality = personality
         self.memory_len = memory_len
         self.memory = []
         self.last_player_distribution = [0.7, 0.15, 0.1, 0.05, 0, 0, 0]
+        
     def observe_outcome(self, player_win, player_dist):
         self.memory.append({'player_win': player_win, 'player_dist': player_dist})
         if len(self.memory) > self.memory_len:
             self.memory.pop(0)
         self.last_player_distribution = player_dist
+        
     def decide_personality(self):
         n = len(self.memory)
-        if n < self.memory_len:
-            return
+        if n < self.memory_len: return
         wins = [m['player_win'] for m in self.memory]
         win_rate = sum(wins) / n
         if win_rate > 0.7:
@@ -44,17 +45,17 @@ class EnhancedEnemyAI:
             self.personality = "defensive"
         else:
             self.personality = "deceptive"
+            
     def suggest_enemy_recruit(self):
         p = self.last_player_distribution
         max_index = p.index(max(p))
         weights = list(p)
-        # Anti-counter strategy
         if max_index == 0:
             weights = [p[0]*0.7, p[1]+0.1, p[2]+0.2, p[3], p[4], p[5], p[6]]
         elif max_index == 1:
-            weights = [p+0.1, p[1]*0.7, p[2], p[3]+0.2, p[4], p[5], p[6]]
+            weights = [p[0]+0.1, p[1]*0.7, p[2], p[3]+0.2, p[4], p[5], p[6]]
         elif max_index == 2:
-            weights = [p+0.2, p[1], p[2]*0.7, p[3]+0.1, p[4], p[5], p[6]]
+            weights = [p[0]+0.2, p[1], p[2]*0.7, p[3]+0.1, p[4], p[5], p[6]]
         else:
             weights = p
         norm = sum(weights)
@@ -70,37 +71,63 @@ class EnhancedEnemyAI:
         }
 
 class ChessSunTzuAI:
-    """AI module combining Chess strategy and Sun Tzu principles"""
     def __init__(self):
         self.chess_principles = [
             "control_center", "mobility", "king_safety", "create_threats",
             "coordinate_all_units", "anticipate_counter", "defend_weakness",
             "sacrifice_for_advantage", "deception"
         ]
+        
     def recommend(self, player_forces, enemy_forces, morale, terrain, weather, time, last_actions):
         recommendations = []
-        # Control the center - position advantage
         if terrain in ["accessible", "open"] and player_forces > enemy_forces:
             recommendations.append("Concentrate your forces in central or open areas to dominate the battlefield and control the terrain.")
-        # Mobility and surprise attack
         if weather not in ["stormy", "foggy"] and morale > 0.6:
             recommendations.append("Use mobility to maneuver swiftly and surprise the enemy where they are weakest.")
-        # Defense if fatigued or outnumbered
         if morale < 0.4 or player_forces < enemy_forces:
             recommendations.append("Protect vulnerable units, avoid direct confrontation, fortify positions, or prepare a strategic retreat.")
-        # Feint and sacrifice
         if random.random() < 0.2 or (morale > 0.5 and terrain == "contentious"):
             recommendations.append("Feign a retreat or sacrifice a small force to lure the enemy into a trap and shift the balance of power.")
-        # Coordinated threats
         if player_forces > enemy_forces and random.random() < 0.5:
             recommendations.append("Launch coordinated attacks on enemy weaknesses, focusing units for a decisive breakthrough.")
-        # King safety
         if time == "night" or weather == "foggy":
             recommendations.append("Ensure the safety of your headquarters/command, and avoid surprise attacks at night or in poor weather.")
-        # Deception and adaptation
         if random.random() < 0.3:
             recommendations.append("Employ misinformation, concealment, and varied movement to confuse the opponent.")
         return recommendations
+
+class GoSunTzuAI:
+    def recommend(self, player_state, enemy_state, terrain, morale, last_actions):
+        recommendations = []
+        weak_areas = self.identify_weak_sectors(enemy_state, terrain)
+        if weak_areas:
+            for area in weak_areas:
+                recommendations.append(f"Infiltrate and consolidate weak enemy sector '{area}' to disrupt supplies and begin encirclement.")
+        if self.detect_disconnected_groups(player_state):
+            recommendations.append("Connect isolated friendly detachments to prevent defeat in detail and bolster overall defense.")
+        if self.opportunity_to_encircle(enemy_state, terrain, player_state):
+            recommendations.append("Attempt encirclement to cut enemy retreat lines and force surrender, using indirect approaches.")
+        if random.random() < 0.2 or (morale < 0.5 and "supply" in terrain):
+            recommendations.append("Shift from confrontation to territorial control and adapt rapidly to opportunities.")
+        if random.random() < 0.2:
+            recommendations.append("Send specialist teams to make fast raids into enemy territory (rapid invasion tactic).")
+        if player_state["forces_total"] > 1.1 * enemy_state["forces_total"]:
+            recommendations.append("Maintain a mobile reserve to create latent threats (aji) and disrupt enemy focus.")
+        return recommendations
+        
+    def identify_weak_sectors(self, enemy_state, terrain):
+        weak = []
+        if terrain in ["open", "temporizing", "accessible"] and enemy_state["forces_total"] < 0.8 * enemy_state.get("original_forces", 1):
+            weak.append(terrain)
+        return weak
+        
+    def detect_disconnected_groups(self, player_state):
+        return player_state.get("morale", 1.0) < 0.5 or player_state.get("supply", 1.0) < 0.5
+        
+    def opportunity_to_encircle(self, enemy_state, terrain, player_state):
+        return (terrain in ["entangling", "hemmed-in", "forest", "urban"]
+                and player_state["forces_total"] > 1.2 * enemy_state["forces_total"]
+                and enemy_state.get("morale", 1.0) < 0.5)
 
 class CampaignState:
     def __init__(self):
@@ -131,7 +158,10 @@ class CampaignState:
         self.leadership_quality = leadership
         self.resources = {"gold": 2000, "recruit_points": 300, "fortification": 0}
         self.enemy_ai = EnhancedEnemyAI(personality or random.choice(["aggressive", "defensive", "deceptive"]))
-        self.terrain_types = ["accessible", "entangling", "temporizing", "contentious", "hemmed-in", "desperate", "difficult", "open", "urban", "mountain", "forest"]
+        self.terrain_types = [
+            "accessible", "entangling", "temporizing", "contentious", "hemmed-in", "desperate",
+            "difficult", "open", "urban", "mountain", "forest"
+        ]
         self.weather_conditions = ["clear", "rainy", "foggy", "windy", "stormy"]
         self.day_night_cycle = ["day", "night"]
         self.fatigue = 0.0
@@ -143,39 +173,34 @@ class CampaignState:
         self.current_weather = random.choice(self.weather_conditions)
         self.current_time = random.choice(self.day_night_cycle)
         self.enemy_units_total = self.calculate_total_forces(self.enemy_units)
+        self.enemy_original_forces = self.enemy_units_total
+        self.player_original_forces = self.calculate_total_forces(self.units)
+        
     def calculate_total_forces(self, units_dict):
         return sum(unit.count for unit in units_dict.values())
 
 class CampaignSimulatorGUI:
-    LOG_COLORS = {
-        'info': 'black', 'victory': 'blue', 'defeat': 'red', 'recruitment': 'green',
+    LOG_COLORS = {'info': 'black', 'victory': 'blue', 'defeat': 'red', 'recruitment': 'green',
         'sabotage': 'orange', 'spy': 'purple', 'event': 'brown'
     }
+    
     def __init__(self, root):
         self.root = root
-        self.root.title("Modern Military Campaign Simulator - Sun Tzu & Chess AI")
+        self.root.title("Modern Campaign Simulator - Sun Tzu, Chess & Go AI")
         self.fullscreen = False
         self.state = CampaignState()
-        self.log_text = ScrolledText(root, state='disabled', width=120, height=22, wrap='word')
-        self.log_text.pack(padx=10, pady=5)
+        self.log_text = ScrolledText(root, state='disabled', width=120, height=22, wrap='word'); self.log_text.pack(padx=10, pady=5)
         self.fig = Figure(figsize=(12, 4), dpi=100)
         self.ax = self.fig.add_subplot(111)
-        self.ax.set_title("Forces / Morale / Fatigue / Supply / Actions / AI Evolution")
-        self.ax.set_xlabel("Turns")
-        self.ax.set_ylabel("Values")
-        self.ax.set_ylim(0, 1.2)
         self.canvas = FigureCanvasTkAgg(self.fig, master=root)
         self.canvas.get_tk_widget().pack(padx=10, pady=5)
-        control_frame = tk.Frame(root)
-        control_frame.pack(pady=5)
+        control_frame = tk.Frame(root); control_frame.pack(pady=5)
         tk.Label(control_frame, text="Number of Turns:").grid(row=0, column=0, padx=5)
         self.turns_var = tk.IntVar(value=10)
-        self.turns_entry = tk.Entry(control_frame, width=5, textvariable=self.turns_var)
-        self.turns_entry.grid(row=0, column=1)
+        self.turns_entry = tk.Entry(control_frame, width=5, textvariable=self.turns_var); self.turns_entry.grid(row=0, column=1)
         tk.Label(control_frame, text="Recruitment % - Inf/MechIn/Tank/Artillery/Missiles/Aircraft/Spy (e.g. 40/20/10/10/10/5/5):").grid(row=1, column=0, padx=5)
         self.recruit_dist_var = tk.StringVar(value="40/20/10/10/10/5/5")
-        self.recruit_dist_entry = tk.Entry(control_frame, width=20, textvariable=self.recruit_dist_var)
-        self.recruit_dist_entry.grid(row=1, column=1)
+        self.recruit_dist_entry = tk.Entry(control_frame, width=20, textvariable=self.recruit_dist_var); self.recruit_dist_entry.grid(row=1, column=1)
         self.run_button = tk.Button(control_frame, text="Run Simulation", command=self.run_simulation)
         self.run_button.grid(row=0, column=2, padx=5)
         self.clear_button = tk.Button(control_frame, text="Clear Logs and Graphs", command=self.clear_logs_graph)
@@ -191,8 +216,9 @@ class CampaignSimulatorGUI:
         self.logs = []
         self.sim_data = []
         self.init_advanced_parameters()
-        self.chess_ia = ChessSunTzuAI()  # Chess & Sun Tzu AI
-
+        self.chess_ia = ChessSunTzuAI()
+        self.go_ia = GoSunTzuAI()
+        
     def log(self, message, event_type="info"):
         self.logs.append(message)
         self.log_text.configure(state='normal')
@@ -201,6 +227,7 @@ class CampaignSimulatorGUI:
         self.log_text.see(tk.END)
         self.log_text.configure(state='disabled')
         self.root.update_idletasks()
+
 
     def clear_logs_graph(self):
         self.log_text.configure(state='normal')
@@ -216,18 +243,17 @@ class CampaignSimulatorGUI:
         self.canvas.draw()
         self.export_button.config(state='disabled')
         self.log("Logs and graphs cleared.", event_type="event")
-
+        
     def export_excel(self):
         if not self.sim_data:
             messagebox.showwarning("No Data", "No data available for export.")
             return
         filename = f"campaign_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-        wb = openpyxl.Workbook()
-        ws = wb.active
-        ws.title = "Campaign Simulation"
+        wb = openpyxl.Workbook(); ws = wb.active; ws.title = "Campaign Simulation"
         headers = ["Turn", "Total Forces", "Enemy Total Forces", "Morale", "Enemy Morale",
-                   "Fatigue", "Supply", "Resources Gold", "Recruit Points", "Fortifications", "Terrain",
-                   "Weather", "Time", "Key Actions", "Special Actions", "Enemy AI Personality"]
+            "Fatigue", "Supply", "Resources Gold", "Recruit Points", "Fortifications", 
+            "Terrain", "Weather", "Time", "Key Actions", "Special Actions", "Enemy AI Personality"
+        ]
         ws.append(headers)
         for record in self.sim_data:
             ws.append([
@@ -241,14 +267,13 @@ class CampaignSimulatorGUI:
                 record.get("special_actions", 0),
                 record.get("enemy_ai", "unknown")
             ])
-        wb.save(filename)
-        self.log(f"Excel report exported to: {filename}", event_type="event")
+        wb.save(filename); self.log(f"Excel report exported to: {filename}", event_type="event")
         messagebox.showinfo("Export Complete", f"Report saved as:\n{filename}")
-
+        
     def toggle_fullscreen(self):
         self.fullscreen = not self.fullscreen
         self.root.attributes('-fullscreen', self.fullscreen)
-
+        
     def save_campaign(self):
         file = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON","*.json")])
         if file:
@@ -272,7 +297,7 @@ class CampaignSimulatorGUI:
             with open(file, "w") as f:
                 json.dump(data, f)
             self.log(f"Campaign saved ({file})", event_type="event")
-
+            
     def load_campaign(self):
         file = filedialog.askopenfilename(defaultextension=".json", filetypes=[("JSON","*.json")])
         if file:
@@ -296,12 +321,12 @@ class CampaignSimulatorGUI:
             self.state.current_time = loaded["current_time"]
             self.update_graph()
             self.log("Campaign loaded successfully.", event_type="event")
-
+            
     def init_advanced_parameters(self):
         self.state.init_state()
-
-    def display_chess_suntzu_recommendations(self):
-        recs = self.chess_ia.recommend(
+        
+    def display_strategic_recommendations(self):
+        chess_recs = self.chess_ia.recommend(
             self.calculate_total_forces(self.state.units),
             self.calculate_total_forces(self.state.enemy_units),
             self.state.morale,
@@ -310,78 +335,214 @@ class CampaignSimulatorGUI:
             self.state.current_time,
             self.logs[-5:] if len(self.logs) >= 5 else self.logs
         )
-        for r in recs:
-            self.log("AI Recommendation: " + r, event_type="event")
-
+        player_state = {
+            "forces_total": self.calculate_total_forces(self.state.units),
+            "morale": self.state.morale,
+            "supply": self.state.supply,
+            "original_forces": self.state.player_original_forces
+        }
+        enemy_state = {
+            "forces_total": self.calculate_total_forces(self.state.enemy_units),
+            "morale": self.state.enemy_morale,
+            "original_forces": self.state.enemy_original_forces
+        }
+        go_recs = self.go_ia.recommend(
+            player_state,
+            enemy_state,
+            self.state.current_terrain,
+            self.state.morale,
+            self.logs[-5:] if len(self.logs) >= 5 else self.logs
+        )
+        for r in chess_recs:
+            self.log("Chess AI Recommendation: " + r, event_type="event")
+        for r in go_recs:
+            self.log("Go AI Recommendation: " + r, event_type="event")
+        
+    def run_simulation(self):
+        self.log_text.configure(state='normal')
+        self.log_text.delete('1.0', tk.END)
+        self.log_text.configure(state='disabled')
+        self.logs.clear()
+        self.sim_data.clear()
+        self.export_button.config(state='disabled')
+        self.init_advanced_parameters()
+        try:
+            turns = int(self.turns_var.get())
+            if turns <= 0:
+                raise ValueError
+        except ValueError:
+            messagebox.showerror("Error", "Invalid number of turns, please enter a positive integer.")
+            return
     
-    def update_graph(self):
-        turns = [d["turn"] for d in self.sim_data]
-        forces = [d["forces_total"] / 30000 for d in self.sim_data]  # Normalize max likely force size
-        enemy = [d["enemy_forces_total"] / 30000 for d in self.sim_data]
-        morale = [d["morale"] for d in self.sim_data]
-        fatigue = [d["fatigue"] for d in self.sim_data]
-        supply = [d["supply"] for d in self.sim_data]
-        actions_count = [d.get("special_actions", 0) for d in self.sim_data]
-        personality_map = {"aggressive":1.0, "deceptive":0.5, "defensive":0.0}
-        ia_vals = [personality_map.get(d.get("enemy_ai","deceptive"), 0.5) for d in self.sim_data]
-        unit_names = ["infantry", "mechanized_infantry", "tank", "artillery", "missiles", "aircraft", "spies"]
-        player_compo = []
-        for d in self.sim_data:
-            total_f = d["forces_total"] if d["forces_total"] > 0 else 1
-            compo = []
-            for un in unit_names:
-                val = self.state.units[un].count / total_f if total_f > 0 else 0
-                compo.append(val)
-            player_compo.append(compo)
-        player_compo = np.array(player_compo).T
-        self.ax.clear()
-        self.ax.plot(turns, forces, label='Your Forces (Normalized)', color='blue')
-        self.ax.plot(turns, enemy, label='Enemy Forces (Normalized)', color='red')
-        self.ax.plot(turns, morale, label='Morale', color='darkgreen')
-        self.ax.plot(turns, fatigue, label='Fatigue', color='brown')
-        self.ax.plot(turns, supply, label='Supply', color='orange')
-        self.ax.plot(turns, actions_count, label='Special Actions', color='purple')
-        self.ax.plot(turns, ia_vals, 'm--', label='Enemy AI Personality (1=Agg,0.5=Dec,0=Def)')
-        bottom = np.zeros(len(turns))
-        colors = ['#559966', '#9763a6', '#e6d44a', '#ffa500', '#4a90e2', '#c04adb', '#555555']
-        labels = ['Infantry', 'Mechanized Infantry', 'Tanks', 'Artillery', 'Missiles', 'Aircraft', 'Spies']
-        for idx, (un, color, label) in enumerate(zip(unit_names, colors, labels)):
-            self.ax.fill_between(turns, bottom, bottom + player_compo[idx], color=color, alpha=0.3, step="pre", label=label)
-            bottom += player_compo[idx]
-        self.ax.set_title("Forces / Morale / Fatigue / Supply / Actions / AI Evolution")
-        self.ax.set_xlabel("Turns")
-        self.ax.set_ylabel("Normalized Values")
-        self.ax.set_ylim(0, 1.2)
-        self.ax.legend(loc='upper right')
-        self.canvas.draw()
-
-
+        recruit_dist = self.parse_recruit_dist(self.recruit_dist_var.get())
+        self.log(f"=== Starting Simulation (Enemy AI: {self.state.enemy_ai.personality}) ===", event_type="info")
+        for turn in range(1, turns + 1):
+            self.log(f"\n--- Turn {turn} ---", event_type="info")
     
-    def resolve_battle(self):
-        player_power = 0
-        enemy_power = 0
-        for ut in self.state.units.values():
-            power = ut.attack * ut.count * (1 - self.state.fatigue * 0.5)
-            if ut.special.get("air_superiority"):
-                power *= 1.2
-            player_power += power
-        for eut in self.state.enemy_units.values():
-            power = eut.attack * eut.count * (1 - self.state.fatigue * 0.5)
-            if eut.special.get("air_superiority"):
-                power *= 1.2
-            enemy_power += power
-            
-        # Terrain effect reduces effectiveness of mechanized and tank forces in difficult terrain
-        if self.state.current_terrain in ["difficult", "entangling", "hemmed-in"]:
-            for ut in ["mechanized_infantry", "tank", "artillery"]:
-                if ut in self.state.units:
-                    player_power -= self.state.units[ut].attack * self.state.units[ut].count * 0.3
-                if ut in self.state.enemy_units:
-                    enemy_power -= self.state.enemy_units[ut].attack * self.state.enemy_units[ut].count * 0.3
-        return max(0, int(player_power)), max(0, int(enemy_power))
-
-
+            # Randomly update weather and time, and possibly terrain to simulate a dynamic campaign
+            if turn % 3 == 0:
+                self.state.current_weather = random.choice(self.state.weather_conditions)
+            if turn % 2 == 0:
+                self.state.current_time = "day" if self.state.current_time == "night" else "night"
+            if random.random() < 0.1:
+                self.state.current_terrain = random.choice(self.state.terrain_types)
     
+            # 1. Apply environment effects (weather, time, terrain)
+            env_effects = self.environment_effects()
+            for e in env_effects:
+                self.log(e, event_type="event")
+    
+            # 2. Supply line disruption possible event
+            supply_event = self.supply_line_event()
+            if supply_event:
+                self.log(supply_event, event_type="sabotage")
+    
+            # 3. Sun Tzu advanced tactics actions
+            advanced_actions, self.state.enemy_morale, new_enemy_forces = self.sun_tzu_advanced_tactics(
+                turn, self.state.enemy_morale, self.calculate_total_forces(self.state.enemy_units),
+                self.calculate_total_forces(self.state.units)
+            )
+            self.state.enemy_units_total = new_enemy_forces
+            for aa in advanced_actions:
+                self.log(aa, event_type="event")
+    
+            # 4. Spy operations (potentially sabotage or misinformation)
+            spy_actions = self.advanced_spy_operations()
+            for sa in spy_actions:
+                self.log(sa, event_type="spy")
+    
+            # 5. Resource management (recruitment, fortification upkeep, gold)
+            self.resource_management(recruit_dist)
+    
+            # 6. Morale recalculation for player side
+            self.state.morale = self.calculate_morale()
+    
+            # 7. Compute battle outcomes
+            player_power, enemy_power = self.resolve_battle()
+            enemy_behavior = self.state.enemy_ai.adjust_behavior(player_power, enemy_power, self.state.enemy_morale)
+            if enemy_behavior["avoid"]:
+                self.log("Enemy chooses to avoid direct confrontation.", event_type="event")
+                enemy_power *= 0.8
+            if enemy_behavior["feint"]:
+                self.log("Enemy performs feints and misdirection.", event_type="spy")
+                player_power *= 0.9
+    
+            # 8. Apply losses
+            if player_power > enemy_power:
+                enemy_losses = int((player_power - enemy_power) * 0.1)
+                player_losses = int(enemy_power * 0.05)
+                self.log(f"Your army inflicted {enemy_losses} losses to the enemy.", event_type="victory")
+                self.log(f"Your army suffered {player_losses} losses.", event_type="defeat")
+            else:
+                player_losses = int((enemy_power - player_power) * 0.1)
+                enemy_losses = int(player_power * 0.05)
+                self.log(f"Your army suffered {player_losses} losses.", event_type="defeat")
+                self.log(f"Enemy suffered {enemy_losses} losses.", event_type="victory")
+            self.apply_losses(self.state.units, player_losses)
+            self.apply_losses(self.state.enemy_units, enemy_losses)
+    
+            # 9. Fatigue and supply consumption increase from battle
+            fatigue_gain = 0.05 + player_losses / 30000
+            self.state.fatigue = min(1, self.state.fatigue + fatigue_gain)
+            supply_consumption = 0.1 + fatigue_gain * 0.5
+            self.state.supply = max(0, self.state.supply - supply_consumption)
+    
+            # 10. Battle aftermath (recruit points and gold affected by civilian support changes)
+            self.battle_aftermath(player_losses, enemy_losses)
+    
+            # 11. Enemy AI learns/adapts
+            self.update_enemy_ai(player_losses, enemy_losses)
+    
+            # 12. Strategic AI recommendations (Chess & Go principles)
+            self.display_strategic_recommendations()
+    
+            # 13. Log summary and stats for this turn
+            self.log(f"End of turn {turn}:", event_type="info")
+            self.log(f"  Your unit counts: Infantry={self.state.units['infantry'].count}, Mechanized Infantry={self.state.units['mechanized_infantry'].count}, Tanks={self.state.units['tank'].count}, Artillery={self.state.units['artillery'].count}, Missiles={self.state.units['missiles'].count}, Aircraft={self.state.units['aircraft'].count}, Spies={self.state.units['spies'].count}", event_type="info")
+            self.log(f"  Enemy unit counts: Infantry={self.state.enemy_units['infantry'].count}, Mechanized Infantry={self.state.enemy_units['mechanized_infantry'].count}, Tanks={self.state.enemy_units['tank'].count}, Artillery={self.state.enemy_units['artillery'].count}, Missiles={self.state.enemy_units['missiles'].count}, Aircraft={self.state.enemy_units['aircraft'].count}, Spies={self.state.enemy_units['spies'].count}", event_type="info")
+            self.log(f"  Morale: You={self.state.morale:.2f}, Enemy={self.state.enemy_morale:.2f}", event_type="info")
+            self.log(f"  Fatigue: {self.state.fatigue:.2f}, Supply level: {self.state.supply:.2f}", event_type="info")
+            self.log(f"  Resources: Gold={self.state.resources['gold']}, Recruit Points={self.state.resources['recruit_points']}, Fortifications={self.state.resources['fortification']}", event_type="info")
+            self.log(f"  Terrain: {self.state.current_terrain}, Weather: {self.state.current_weather}, Time: {self.state.current_time}", event_type="info")
+    
+            self.sim_data.append({
+                "turn": turn,
+                "forces_total": self.calculate_total_forces(self.state.units),
+                "enemy_forces_total": self.calculate_total_forces(self.state.enemy_units),
+                "morale": self.state.morale,
+                "enemy_morale": self.state.enemy_morale,
+                "fatigue": self.state.fatigue,
+                "supply": self.state.supply,
+                "resources": self.state.resources.copy(),
+                "terrain": self.state.current_terrain,
+                "weather": self.state.current_weather,
+                "time": self.state.current_time,
+                "actions": advanced_actions + spy_actions,
+                "special_actions": len(advanced_actions + spy_actions),
+                "enemy_ai": self.state.enemy_ai.personality
+            })
+            self.update_graph()
+            if self.calculate_total_forces(self.state.units) == 0:
+                self.log("Your army has been destroyed! Campaign lost.", event_type="defeat")
+                break
+            if self.calculate_total_forces(self.state.enemy_units) == 0:
+                self.log("Enemy army defeated! Campaign won!", event_type="victory")
+                break
+    
+        # Simulation end summary
+        self.log("\n=== Simulation Ended ===", event_type="event")
+        player_forces_left = self.calculate_total_forces(self.state.units)
+        enemy_forces_left = self.calculate_total_forces(self.state.enemy_units)
+        self.log(f"Final forces - You: {player_forces_left}, Enemy: {enemy_forces_left}", event_type="info")
+        if player_forces_left > enemy_forces_left:
+            self.log("Campaign successful! Congratulations!", event_type="victory")
+        else:
+            self.log("Campaign lost or suspended.", event_type="defeat")
+        self.export_button.config(state='normal')
+        
+        
+    def parse_recruit_dist(self, dist):
+        try:
+            result = [int(x) for x in dist.strip().split('/')]
+        except:
+            result = [40,20,10,10,10,5,5]
+        total = sum(result)
+        if total != 100 and total > 0:
+            ratio = [x*100//total for x in result]
+            return ratio + [0]*(7 - len(ratio))
+        return result + [0]*(7 - len(result))
+    
+    
+    def environment_effects(self):
+        effects = []
+        if self.state.current_time == "night":
+            effects.append("Combat effectiveness reduced due to night time.")
+            self.state.fatigue += 0.05
+        if self.state.current_weather == "rainy":
+            effects.append("Rain reduces artillery and aircraft effectiveness.")
+            if "artillery" in self.state.units:
+                self.state.units["artillery"].count = max(0, self.state.units["artillery"].count - 20)
+            if "artillery" in self.state.enemy_units:
+                self.state.enemy_units["artillery"].count = max(0, self.state.enemy_units["artillery"].count - 15)
+            if "aircraft" in self.state.units:
+                self.state.units["aircraft"].count = max(0, self.state.units["aircraft"].count - 30)
+            if "aircraft" in self.state.enemy_units:
+                self.state.enemy_units["aircraft"].count = max(0, self.state.enemy_units["aircraft"].count - 25)
+        if self.state.current_weather == "windy":
+            effects.append("Wind affects projectile weapons unpredictably.")
+        return effects
+    
+    def supply_line_event(self):
+        event_message = None
+        enemy_spy_effectiveness = self.state.enemy_units["spies"].count / 2000
+        disruption_chance = 0.1 + enemy_spy_effectiveness
+        if random.random() < disruption_chance and self.state.supply < 0.6:
+            fatigue_penalty = random.uniform(0.1, 0.2)
+            self.state.fatigue += fatigue_penalty
+            self.state.fatigue = min(self.state.fatigue, 1.0)
+            event_message = f"Supply line disrupted! Fatigue increased by {fatigue_penalty:.2f}."
+        return event_message
+
     def sun_tzu_advanced_tactics(self, turn, enemy_morale, enemy_forces, player_forces):
         actions = []
         if enemy_morale > 0.7 and turn % 3 == 0:
@@ -402,45 +563,36 @@ class CampaignSimulatorGUI:
                 actions.append("Ambush failed, troops confused.")
         return actions, max(0, min(enemy_morale, 1)), max(0, enemy_forces)
 
-    def supply_line_event(self):
-        event_message = None
-        enemy_spy_effectiveness = self.state.enemy_units["spies"].count / 2000
-        disruption_chance = 0.1 + enemy_spy_effectiveness
-        if random.random() < disruption_chance and self.state.supply < 0.6:
-            fatigue_penalty = random.uniform(0.1, 0.2)
-            self.state.fatigue += fatigue_penalty
-            self.state.fatigue = min(self.state.fatigue, 1.0)
-            event_message = f"Supply line disrupted! Fatigue increased by {fatigue_penalty:.2f}."
-        return event_message
+    def calculate_total_forces(self, units_dict):
+        return sum(unit.count for unit in units_dict.values())
     
-    def calculate_morale(self):
-        leadership_bonus = (self.state.leadership_quality - 0.5) * 0.3
-        spy_bonus = (self.state.spy_effectiveness - 0.5) * 0.2
-        weather_penalty = -0.1 if self.state.current_weather in ["stormy", "foggy"] else 0
-        morale = self.state.morale - self.state.fatigue * 0.5 + (self.state.supply - 0.5) * 0.4 + leadership_bonus + spy_bonus + weather_penalty
-        return max(0, min(morale, 1))
-
-    def enemy_decision(self, player_forces_total, enemy_forces_total, morale):
-        return self.state.enemy_ai.adjust_behavior(player_forces_total, enemy_forces_total, morale)
-
-    def environment_effects(self):
-        effects = []
-        if self.state.current_time == "night":
-            effects.append("Combat effectiveness reduced due to night time.")
-            self.state.fatigue += 0.05
-        if self.state.current_weather == "rainy":
-            effects.append("Rain reduces artillery and aircraft effectiveness.")
-            if "artillery" in self.state.units:
-                self.state.units["artillery"].count = max(0, self.state.units["artillery"].count - 20)
-            if "artillery" in self.state.enemy_units:
-                self.state.enemy_units["artillery"].count = max(0, self.state.enemy_units["artillery"].count - 15)
-            if "aircraft" in self.state.units:
-                self.state.units["aircraft"].count = max(0, self.state.units["aircraft"].count - 30)
-            if "aircraft" in self.state.enemy_units:
-                self.state.enemy_units["aircraft"].count = max(0, self.state.enemy_units["aircraft"].count - 25)
-        if self.state.current_weather == "windy":
-            effects.append("Wind affects projectile weapons unpredictably.")
-        return effects
+    
+    def apply_losses(self, units, losses):
+        total = self.calculate_total_forces(units)
+        if total == 0 or losses == 0:
+            return
+        loss_ratio = min(1, losses / total)
+        for ut in units.values():
+            lost = int(ut.count * loss_ratio)
+            ut.count = max(0, ut.count - lost)
+            
+    def advanced_spy_operations(self):
+        actions = []
+        if self.state.units["spies"].count > 0:
+            sabotage_chance = 0.2 * (self.state.units["spies"].count / 100)
+            if random.random() < sabotage_chance:
+                supply_damage = random.uniform(0.05, 0.15)
+                self.state.supply = max(0, self.state.supply - supply_damage)
+                actions.append("Spies sabotaged enemy supply lines successfully.")
+                self.state.enemy_morale = max(0, self.state.enemy_morale - 0.05)
+            misinformation_chance = 0.25 * (self.state.units["spies"].count / 100)
+            if random.random() < misinformation_chance:
+                actions.append("Spies spread misinformation, confusing enemy command.")
+                self.state.enemy_morale = max(0, self.state.enemy_morale - 0.07)
+        else:
+            actions.append("No spies available for operations.")
+        self.state.spy_effectiveness = min(1.0, self.state.units["spies"].count / 150)
+        return actions
 
     def resource_management(self, recruit_dist):
         recruit_gain = int(self.state.resources["recruit_points"] * 0.1)
@@ -465,24 +617,38 @@ class CampaignSimulatorGUI:
                 self.state.fatigue += 0.05
                 self.log("Failed to maintain fortifications, fatigue increases.", event_type="defeat")
 
-    def advanced_spy_operations(self):
-        actions = []
-        if self.state.units["spies"].count > 0:
-            sabotage_chance = 0.2 * (self.state.units["spies"].count / 100)
-            if random.random() < sabotage_chance:
-                supply_damage = random.uniform(0.05, 0.15)
-                self.state.supply = max(0, self.state.supply - supply_damage)
-                actions.append("Spies sabotaged enemy supply lines successfully.")
-                self.state.enemy_morale = max(0, self.state.enemy_morale - 0.05)
-            misinformation_chance = 0.25 * (self.state.units["spies"].count / 100)
-            if random.random() < misinformation_chance:
-                actions.append("Spies spread misinformation, confusing enemy command.")
-                self.state.enemy_morale = max(0, self.state.enemy_morale - 0.07)
-        else:
-            actions.append("No spies available for operations.")
-        self.state.spy_effectiveness = min(1.0, self.state.units["spies"].count / 150)
-        return actions
 
+    def calculate_morale(self):
+        leadership_bonus = (self.state.leadership_quality - 0.5) * 0.3
+        spy_bonus = (self.state.spy_effectiveness - 0.5) * 0.2
+        weather_penalty = -0.1 if self.state.current_weather in ["stormy", "foggy"] else 0
+        morale = self.state.morale - self.state.fatigue * 0.5 + (self.state.supply - 0.5) * 0.4 + leadership_bonus + spy_bonus + weather_penalty
+        return max(0, min(morale, 1))
+    
+    def resolve_battle(self):
+        player_power = 0
+        enemy_power = 0
+        for ut in self.state.units.values():
+            power = ut.attack * ut.count * (1 - self.state.fatigue * 0.5)
+            if ut.special.get("air_superiority"):
+                power *= 1.2
+            player_power += power
+        for eut in self.state.enemy_units.values():
+            power = eut.attack * eut.count * (1 - self.state.fatigue * 0.5)
+            if eut.special.get("air_superiority"):
+                power *= 1.2
+            enemy_power += power
+            
+        # Terrain effect reduces effectiveness of mechanized and tank forces in difficult terrain
+        if self.state.current_terrain in ["difficult", "entangling", "hemmed-in"]:
+            for ut in ["mechanized_infantry", "tank", "artillery"]:
+                if ut in self.state.units:
+                    player_power -= self.state.units[ut].attack * self.state.units[ut].count * 0.3
+                if ut in self.state.enemy_units:
+                    enemy_power -= self.state.enemy_units[ut].attack * self.state.enemy_units[ut].count * 0.3
+        return max(0, int(player_power)), max(0, int(enemy_power))
+    
+    
     def battle_aftermath(self, player_losses, enemy_losses):
         pop_support_change = (enemy_losses - player_losses) / 10000
         self.state.resources["recruit_points"] += int(pop_support_change * 50)
@@ -495,6 +661,7 @@ class CampaignSimulatorGUI:
             self.log("High fatigue causing political unrest! Reduced resource gains.", event_type="defeat")
             self.state.resources["gold"] = max(0, self.state.resources["gold"] - 100)
 
+
     def update_enemy_ai(self, player_losses, enemy_losses):
         player_win = player_losses < enemy_losses
         recruit_dist = [self.state.units[t].count for t in ["infantry","mechanized_infantry","tank","artillery","missiles","aircraft","spies"]]
@@ -503,157 +670,51 @@ class CampaignSimulatorGUI:
         self.state.enemy_ai.observe_outcome(player_win, player_dist)
         self.log(f"Enemy AI shifts to {self.state.enemy_ai.personality} strategy based on battle outcomes.", event_type="spy")
 
-    def calculate_total_forces(self, units_dict):
-        return sum(u.count for u in units_dict.values())
 
-    def apply_losses(self, units, losses):
-        total = self.calculate_total_forces(units)
-        if total == 0 or losses == 0:
-            return
-        loss_ratio = min(1, losses / total)
-        for ut in units.values():
-            lost = int(ut.count * loss_ratio)
-            ut.count = max(0, ut.count - lost)
-            
-    def environment_effects(self):
-        effects = []
-        if self.state.current_time == "night":
-            effects.append("Combat effectiveness reduced due to night time.")
-            self.state.fatigue += 0.05
-        if self.state.current_weather == "rainy":
-            effects.append("Rain reduces artillery and aircraft effectiveness.")
-            if "artillery" in self.state.units:
-                self.state.units["artillery"].count = max(0, self.state.units["artillery"].count - 20)
-            if "artillery" in self.state.enemy_units:
-                self.state.enemy_units["artillery"].count = max(0, self.state.enemy_units["artillery"].count - 15)
-            if "aircraft" in self.state.units:
-                self.state.units["aircraft"].count = max(0, self.state.units["aircraft"].count - 30)
-            if "aircraft" in self.state.enemy_units:
-                self.state.enemy_units["aircraft"].count = max(0, self.state.enemy_units["aircraft"].count - 25)
-        if self.state.current_weather == "windy":
-            effects.append("Wind affects projectile weapons unpredictably.")
-        return effects
-
-    def run_simulation(self):
-        self.log_text.configure(state='normal')
-        self.log_text.delete('1.0', tk.END)
-        self.log_text.configure(state='disabled')
-        self.logs.clear()
-        self.sim_data.clear()
-        self.export_button.config(state='disabled')
-        self.init_advanced_parameters()
-        try:
-            turns = int(self.turns_var.get())
-            if turns <= 0:
-                raise ValueError
-        except ValueError:
-            messagebox.showerror("Error", "Invalid number of turns, please enter a positive integer.")
-            return
-        recruit_dist = self.parse_recruit_dist(self.recruit_dist_var.get())
-        self.log(f"=== Starting Modern Military Campaign Simulation (Enemy AI: {self.state.enemy_ai.personality}) ===", event_type="info")
-        for turn in range(1, turns + 1):
-            self.log(f"\n--- Turn {turn} ---", event_type="info")
-            if turn % 3 == 0:
-                self.state.current_weather = random.choice(self.state.weather_conditions)
-            if turn % 2 == 0:
-                self.state.current_time = "day" if self.state.current_time == "night" else "night"
-            if random.random() < 0.1:
-                self.state.current_terrain = random.choice(self.state.terrain_types)
-            env_effects = self.environment_effects()
-            for e in env_effects:
-                self.log(e, event_type="event")
-            supply_event = self.supply_line_event()
-            if supply_event:
-                self.log(supply_event, event_type="sabotage")
-            advanced_actions, self.state.enemy_morale, new_enemy_forces = self.sun_tzu_advanced_tactics(
-                turn, self.state.enemy_morale, self.calculate_total_forces(self.state.enemy_units),
-                self.calculate_total_forces(self.state.units)
-            )
-            self.state.enemy_units_total = new_enemy_forces
-            for aa in advanced_actions:
-                self.log(aa, event_type="event")
-            spy_actions = self.advanced_spy_operations()
-            for sa in spy_actions:
-                self.log(sa, event_type="spy")
-            self.resource_management(recruit_dist)
-            self.state.morale = self.calculate_morale()
-            player_power, enemy_power = self.resolve_battle()
-            enemy_behavior = self.enemy_decision(player_power, enemy_power, self.state.enemy_morale)
-            if enemy_behavior["avoid"]:
-                self.log("Enemy chooses to avoid direct confrontation.", event_type="event")
-                enemy_power *= 0.8
-            if enemy_behavior["feint"]:
-                self.log("Enemy performs feints and misdirection.", event_type="spy")
-                player_power *= 0.9
-            if player_power > enemy_power:
-                enemy_losses = int((player_power - enemy_power) * 0.1)
-                player_losses = int(enemy_power * 0.05)
-                self.log(f"Your army inflicted {enemy_losses} losses to the enemy.", event_type="victory")
-                self.log(f"Your army suffered {player_losses} losses.", event_type="defeat")
-            else:
-                player_losses = int((enemy_power - player_power) * 0.1)
-                enemy_losses = int(player_power * 0.05)
-                self.log(f"Your army suffered {player_losses} losses.", event_type="defeat")
-                self.log(f"Enemy suffered {enemy_losses} losses.", event_type="victory")
-            self.apply_losses(self.state.units, player_losses)
-            self.apply_losses(self.state.enemy_units, enemy_losses)
-            fatigue_gain = 0.05 + player_losses / 30000
-            self.state.fatigue = min(1, self.state.fatigue + fatigue_gain)
-            supply_consumption = 0.1 + fatigue_gain * 0.5
-            self.state.supply = max(0, self.state.supply - supply_consumption)
-            self.battle_aftermath(player_losses, enemy_losses)
-            self.update_enemy_ai(player_losses, enemy_losses)
-            self.display_chess_suntzu_recommendations()  # <<<<< Chess/Sun Tzu AI invoked here!
-            self.log(f"End of turn {turn}:", event_type="info")
-            self.log(f"  Your unit counts: Infantry={self.state.units['infantry'].count}, Mechanized Infantry={self.state.units['mechanized_infantry'].count}, Tanks={self.state.units['tank'].count}, Artillery={self.state.units['artillery'].count}, Missiles={self.state.units['missiles'].count}, Aircraft={self.state.units['aircraft'].count}, Spies={self.state.units['spies'].count}", event_type="info")
-            self.log(f"  Enemy unit counts: Infantry={self.state.enemy_units['infantry'].count}, Mechanized Infantry={self.state.enemy_units['mechanized_infantry'].count}, Tanks={self.state.enemy_units['tank'].count}, Artillery={self.state.enemy_units['artillery'].count}, Missiles={self.state.enemy_units['missiles'].count}, Aircraft={self.state.enemy_units['aircraft'].count}, Spies={self.state.enemy_units['spies'].count}", event_type="info")
-            self.log(f"  Morale: You={self.state.morale:.2f}, Enemy={self.state.enemy_morale:.2f}", event_type="info")
-            self.log(f"  Fatigue: {self.state.fatigue:.2f}, Supply level: {self.state.supply:.2f}", event_type="info")
-            self.log(f"  Resources: Gold={self.state.resources['gold']}, Recruit Points={self.state.resources['recruit_points']}, Fortifications={self.state.resources['fortification']}", event_type="info")
-            self.log(f"  Terrain: {self.state.current_terrain}, Weather: {self.state.current_weather}, Time: {self.state.current_time}", event_type="info")
-            self.sim_data.append({
-                "turn": turn,
-                "forces_total": self.calculate_total_forces(self.state.units),
-                "enemy_forces_total": self.calculate_total_forces(self.state.enemy_units),
-                "morale": self.state.morale,
-                "enemy_morale": self.state.enemy_morale,
-                "fatigue": self.state.fatigue,
-                "supply": self.state.supply,
-                "resources": self.state.resources.copy(),
-                "terrain": self.state.current_terrain,
-                "weather": self.state.current_weather,
-                "time": self.state.current_time,
-                "actions": advanced_actions + spy_actions,
-                "special_actions": len(advanced_actions + spy_actions),
-                "enemy_ai": self.state.enemy_ai.personality
-            })
-            self.update_graph()
-            if self.calculate_total_forces(self.state.units) == 0:
-                self.log("Your army has been destroyed! Campaign lost.", event_type="defeat")
-                break
-            if self.calculate_total_forces(self.state.enemy_units) == 0:
-                self.log("Enemy army defeated! Campaign won!", event_type="victory")
-                break
-        self.log("\n=== Simulation Ended ===", event_type="event")
-        player_forces_left = self.calculate_total_forces(self.state.units)
-        enemy_forces_left = self.calculate_total_forces(self.state.enemy_units)
-        self.log(f"Final forces - You: {player_forces_left}, Enemy: {enemy_forces_left}", event_type="info")
-        if player_forces_left > enemy_forces_left:
-            self.log("Campaign successful! Congratulations!", event_type="victory")
-        else:
-            self.log("Campaign lost or suspended.", event_type="defeat")
-        self.export_button.config(state='normal')
-
-    def parse_recruit_dist(self, dist):
-        try:
-            result = [int(x) for x in dist.strip().split('/')]
-        except:
-            result = [40,20,10,10,10,5,5]
-        total = sum(result)
-        if total != 100 and total > 0:
-            ratio = [x*100//total for x in result]
-            return ratio + [0]*(7 - len(ratio))
-        return result + [0]*(7 - len(result))
+    def update_graph(self):
+        turns = [d["turn"] for d in self.sim_data]
+        forces = [d["forces_total"] / 30000 for d in self.sim_data]  # Normalize max likely force size
+        enemy = [d["enemy_forces_total"] / 30000 for d in self.sim_data]
+        morale = [d["morale"] for d in self.sim_data]
+        fatigue = [d["fatigue"] for d in self.sim_data]
+        supply = [d["supply"] for d in self.sim_data]
+        actions_count = [d.get("special_actions", 0) for d in self.sim_data]
+        personality_map = {"aggressive":1.0, "deceptive":0.5, "defensive":0.0}
+        ia_vals = [personality_map.get(d.get("enemy_ai","deceptive"), 0.5) for d in self.sim_data]
+    
+        unit_names = ["infantry", "mechanized_infantry", "tank", "artillery", "missiles", "aircraft", "spies"]
+        player_compo = []
+        for d in self.sim_data:
+            total_f = d["forces_total"] if d["forces_total"] > 0 else 1
+            compo = []
+            for un in unit_names:
+                val = self.state.units[un].count / total_f if total_f > 0 else 0
+                compo.append(val)
+            player_compo.append(compo)
+        player_compo = np.array(player_compo).T
+    
+        self.ax.clear()
+        self.ax.plot(turns, forces, label='Your Forces (Normalized)', color='blue')
+        self.ax.plot(turns, enemy, label='Enemy Forces (Normalized)', color='red')
+        self.ax.plot(turns, morale, label='Morale', color='darkgreen')
+        self.ax.plot(turns, fatigue, label='Fatigue', color='brown')
+        self.ax.plot(turns, supply, label='Supply', color='orange')
+        self.ax.plot(turns, actions_count, label='Special Actions', color='purple')
+        self.ax.plot(turns, ia_vals, 'm--', label='Enemy AI Personality (1=Agg,0.5=Dec,0=Def)')
+    
+        bottom = np.zeros(len(turns))
+        colors = ['#559966', '#9763a6', '#e6d44a', '#ffa500', '#4a90e2', '#c04adb', '#555555']
+        labels = ['Infantry', 'Mechanized Infantry', 'Tanks', 'Artillery', 'Missiles', 'Aircraft', 'Spies']
+        for idx, (un, color, label) in enumerate(zip(unit_names, colors, labels)):
+            self.ax.fill_between(turns, bottom, bottom + player_compo[idx], color=color, alpha=0.3, step="pre", label=label)
+            bottom += player_compo[idx]
+    
+        self.ax.set_title("Forces / Morale / Fatigue / Supply / Actions / AI Evolution")
+        self.ax.set_xlabel("Turns")
+        self.ax.set_ylabel("Normalized Values")
+        self.ax.set_ylim(0, 1.2)
+        self.ax.legend(loc='upper right')
+        self.canvas.draw()
 
 
 if __name__ == "__main__":
