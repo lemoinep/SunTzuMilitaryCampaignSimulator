@@ -1,6 +1,6 @@
 # Sun Tzu Military Campaign Simulator
 
-<img src="Images/P0003.jpg" width="50%" />
+<img src="Images/P0003.jpg" width="75%" />
 
 ## Introduction
 
@@ -17,7 +17,7 @@ This work, consisting of 13 chapters, was reportedly composed specifically for H
 
 ## Detailed Python Program Descriptions
 
-<img src="Images/P0005.jpg" width="50%" />
+<img src="Images/P0005.jpg" width="75%" />
 
 ### MCS_001.py
 
@@ -352,4 +352,4 @@ Future Development: A planned integration of advanced AI techniques (machine lea
 I invite you to follow my progress.
 
 
-<img src="Images/P0007.jpg" width="50%" />
+<img src="Images/P0007.jpg" width="75%" />
