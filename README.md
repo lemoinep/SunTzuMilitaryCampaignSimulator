@@ -1,5 +1,7 @@
 # Sun Tzu Military Campaign Simulator
 
+<img src="images/P0003.jpg" width="50%" />
+
 ## Introduction
 
 The Military Campaign Simulator is continually evolving; my future objective is to improve the program by incorporating insights from *Guided by Sun Tzu’s War Tactics* and leveraging artificial intelligence tools.  
@@ -14,6 +16,8 @@ Sun Tzu is most famous as the author of *The Art of War* (孫子兵法), which i
 This work, consisting of 13 chapters, was reportedly composed specifically for Ho Lu, the King of Wu...
 
 ## Detailed Python Program Descriptions
+
+<img src="images/P0005.jpg" width="50%" />
 
 ### MCS_001.py
 
@@ -348,3 +352,4 @@ Future Development: A planned integration of advanced AI techniques (machine lea
 I invite you to follow my progress.
 
 
+<img src="images/P0007.jpg" width="50%" />
