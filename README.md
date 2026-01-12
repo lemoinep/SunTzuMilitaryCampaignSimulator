@@ -1,6 +1,9 @@
 # Sun Tzu Military Campaign Simulator
 
+<p align="center">
 <img src="Images/P0003.jpg" width="75%" />
+</p>
+
 
 ## Introduction
 
@@ -17,9 +20,12 @@ This work, consisting of 13 chapters, was reportedly composed specifically for H
 
 ## Detailed Python Program Descriptions
 
-
+<p align="center">
 <img src="Images/P0008.jpg" width="75%" />
 <img src="Images/P0005.jpg" width="75%" />
+<img src="Images/P0009.jpg" width="75%" />
+</p>
+
 
 ### MCS_001.py
 
@@ -354,4 +360,19 @@ Future Development: A planned integration of advanced AI techniques (machine lea
 I invite you to follow my progress.
 
 
-<img src="Images/P0007.jpg" width="75%" />
+## For more information
+
+<img src="Images/Z20260112_000001.jpg" width="100%" />
+<img src="Images/Z20260112_000002.jpg" width="100%" />
+<img src="Images/Z20260112_000003.jpg" width="100%" />
+<img src="Images/Z20260112_000004.jpg" width="100%" />
+<img src="Images/Z20260112_000005.jpg" width="100%" />
+<img src="Images/Z20260112_000006.jpg" width="100%" />
+<img src="Images/Z20260112_000007.jpg" width="100%" />
+<img src="Images/Z20260112_000008.jpg" width="100%" />
+<img src="Images/Z20260112_000009.jpg" width="100%" />
+<img src="Images/Z20260112_000010.jpg" width="100%" />
+<img src="Images/Z20260112_000011.jpg" width="100%" />
+<img src="Images/Z20260112_000012.jpg" width="100%" />
+<img src="Images/P0007.jpg" width="100%" />
+
