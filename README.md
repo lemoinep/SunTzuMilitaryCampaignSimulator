@@ -1,14 +1,15 @@
 # Sun Tzu Military Campaign Simulator
 
-<p align="center">
-<img src="Images/P0003.jpg" width="75%" />
-</p>
-
 [![Version](https://img.shields.io/badge/version-1.5-green.svg)](https://github.com/lemoinep/SunTzuMilitaryCampaignSimulator)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 
 ---
+
+<p align="center">
+<img src="Images/P0003.jpg" width="75%" />
+</p>
+
 
 ## Introduction
 
