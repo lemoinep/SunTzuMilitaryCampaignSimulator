@@ -7,7 +7,7 @@
 ---
 
 <p align="center">
-<img src="Images/P0003.jpg" width="75%" />
+<img src="Images/P0003.jpg" width="100%" />
 </p>
 
 
@@ -27,9 +27,9 @@ This work, consisting of 13 chapters, was reportedly composed specifically for H
 ## Detailed Python Program Descriptions
 
 <p align="center">
-<img src="Images/P0008.jpg" width="75%" />
-<img src="Images/P0005.jpg" width="75%" />
-<img src="Images/P0009.jpg" width="75%" />
+<img src="Images/P0008.jpg" width="100%" />
+<img src="Images/P0005.jpg" width="100%" />
+<img src="Images/P0009.jpg" width="100%" />
 </p>
 
 
