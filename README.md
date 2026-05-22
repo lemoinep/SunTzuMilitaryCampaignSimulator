@@ -16,6 +16,8 @@
 The Military Campaign Simulator is continually evolving; my future objective is to improve the program by incorporating insights from *Guided by Sun Tzu’s War Tactics* and leveraging artificial intelligence tools.  
 This will allow me to explore how classical strategies interact with modern AI-driven decision-making in complex and adaptive military simulations.
 
+[Play audio](./Medias/Coding_Sun_Tzu_with_Chess_and_Go.mp3)
+
 ## About Sun Tzu
 
 Sun Tzu (also spelled Sun Wu) was an ancient Chinese military strategist. His personal name was Wu, and his style was Ch‘ang-ch‘ing.  
