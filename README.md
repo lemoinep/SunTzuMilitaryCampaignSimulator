@@ -16,7 +16,8 @@
 The Military Campaign Simulator is continually evolving; my future objective is to improve the program by incorporating insights from *Guided by Sun Tzu’s War Tactics* and leveraging artificial intelligence tools.  
 This will allow me to explore how classical strategies interact with modern AI-driven decision-making in complex and adaptive military simulations.
 
-[Play audio](https://github.com/lemoinep/SunTzuMilitaryCampaignSimulator/raw/refs/heads/main/Medias/Coding_Sun_Tzu_with_Chess_and_Go.mp3)
+[Play audio](./Medias/Coding_Sun_Tzu_with_Chess_and_Go.mp3)
+
 
 ## About Sun Tzu
 
