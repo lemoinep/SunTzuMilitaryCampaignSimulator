@@ -38,21 +38,17 @@ This work, consisting of 13 chapters, was reportedly composed specifically for H
 
 ### MCS_001.py
 
-This program is an interactive graphical tool that models military campaign outcomes based on Sun Tzu's strategic principles.  
-Users can simulate multiple turns of conflict, observing the dynamic evolution of army forces, morale, fatigue, and supply levels.  
+This program is an interactive graphical tool that models military campaign outcomes based on Sun Tzu's strategic principles. Users can simulate multiple turns of conflict, observing the dynamic evolution of army forces, morale, fatigue, and supply levels.  
+
 The program integrates classical military concepts such as planning, deception, numerical superiority, terrain advantages, and the use of spies.  
-A detailed log records key decisions and events, helping users analyze strategic impacts turn by turn.  
-The simulation reacts to random environmental factors like weather, terrain types, and enemy behavior to mimic realistic uncertainties.  
-Integrated charts visualize the progression of critical variables over time, enhancing comprehension.  
+A detailed log records key decisions and events, helping users analyze strategic impacts turn by turn. The simulation reacts to random environmental factors like weather, terrain types, and enemy behavior to mimic realistic uncertainties. Integrated charts visualize the progression of critical variables over time, enhancing comprehension.  
+
 Additionally, users can export results and logs as an Excel report for further analysis.  
-The program guides through sound decision-making based on historical strategy while allowing experimentation with different scenarios.  
-It provides a balanced mix of complexity and accessibility for enthusiasts of military history and strategic simulations.  
-Perfect for learning and exploring the art of war through modern programming.
+The program guides through sound decision-making based on historical strategy while allowing experimentation with different scenarios. It provides a balanced mix of complexity and accessibility for enthusiasts of military history and strategic simulations. Perfect for learning and exploring the art of war through modern programming.
 
 ### MCS_002.py
 
-This program is an advanced military campaign simulator, inspired by the principles of Sun Tzu.  
-It models a confrontation between your forces and those of an enemy controlled by adaptive artificial intelligence (AI), in a dynamic environment affected by weather, terrain, fatigue, resources, espionage, and many other strategic factors.
+This program is an advanced military campaign simulator, inspired by the principles of Sun Tzu.  It models a confrontation between your forces and those of an enemy controlled by adaptive artificial intelligence (AI), in a dynamic environment affected by weather, terrain, fatigue, resources, espionage, and many other strategic factors.
 
 #### General Program Description
 
